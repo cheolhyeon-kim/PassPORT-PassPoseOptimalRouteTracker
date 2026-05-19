@@ -31,13 +31,15 @@ PASSPORT는 자세 추정을 통해 영상 속 클라이머의 관절 위치와 
 
 ---
 ## 프로젝트 계획 
-1. 데이터 수집 및 학습: 
-   '킬터보드(Kilter Board)' 영상들을 수집 킬터보드는 홀드 위치가 표준화되어 있어 데이터 규격화에 유리함
+1. 데이터 수집 및 학습:
+   
+   - '킬터보드(Kilter Board)' 영상들을 수집
+   - 킬터보드는 홀드 위치가 표준화되어 있어 데이터 규격화에 유리함
    숙련자들의 완등 영상들을 수집한 뒤, Google MediaPipe(Pose Landmarker)를 활용해 이들의 관절 궤적, 3D 좌표, 무게 중심 이동, 특정 기술(힐훅, 토훅, 드롭니 등)을 쓸 때    의 특징적 포즈 데이터를 추출하여 학습 모델의 기준으로 설정
     
 
 
-2. 사용자 영상 분석 및 피드백 :
+3. 사용자 영상 분석 및 피드백 :
    - 일반 유저가 등반한 영상을 input으로 넣으면, AI가 고수들의 데이터와 비교 분석
      단순한 "자세가 불안정하다"라는 추상적인 피드백이 아니라, "이 구간에서는 힐훅보다 토훅을 사용하는 것이 성공 확률이 78% 더 높습니다"와 같이, 특정 무브에 대한 추천       확률을 %로 시각화하여 제안하는 모델
 
@@ -61,34 +63,34 @@ PASSPORT는 자세 추정을 통해 영상 속 클라이머의 관절 위치와 
          │                       │                     │
          ▼                       ▼                     │
 ┌─────────────────────────────────────────────────────────────────┐
-│                    MODULE 3: POSE EXTRACTION                     │
-│              Google MediaPipe Pose Landmarker (33 keypoints)     │
-│        → 3D 좌표 (x, y, z) × 33 joints × N frames              │
+│                    MODULE 3: POSE EXTRACTION                    │
+│              Google MediaPipe Pose Landmarker (33 keypoints)    │
+│        → 3D 좌표 (x, y, z) × 33 joints × N frames               │
 │        → Confidence score, Visibility 필터링                    │
 └──────────┬──────────────────────────────────────────────────────┘
            │
            ▼
 ┌─────────────────────────────────────────────────────────────────┐
-│                    MODULE 4: FEATURE ENGINEERING                 │
+│                    MODULE 4: FEATURE ENGINEERING                │
 │  • Joint Angles (관절 각도)          • CoM Trajectory (무게중심) │
 │  • Limb Velocity (사지 속도)         • Hold Contact Duration     │
-│  • Body Symmetry Index               • Technique Classifier      │
-│    (힐훅/토훅/드롭니 감지)                                        │
+│  • Body Symmetry Index               • Technique Classifier     │
+│    (힐훅/토훅/드롭니 감지)                                       │
 └──────────┬──────────────────────────────────────────────────────┘
            │                              │
            ▼                              ▼
 ┌──────────────────┐           ┌──────────────────────┐
 │  MODULE 5A       │           │  MODULE 5B           │
-│  Expert DB       │           │  User Sequence        │
-│  (고수 데이터    │           │  Encoder              │
-│   임베딩 저장)   │           │  (실시간 처리)        │
+│  Expert DB       │           │  User Sequence       │
+│  (고수 데이터    │           │  Encoder             │
+│   임베딩 저장)   │           │  (실시간 처리)       │
 └──────────┬───────┘           └──────────┬───────────┘
            │                              │
            └──────────────┬───────────────┘
                           ▼
 ┌─────────────────────────────────────────────────────────────────┐
-│                    MODULE 6: COMPARISON ENGINE                   │
-│                                                                  │
+│                    MODULE 6: COMPARISON ENGINE                  │
+│                                                                 │
 │  ┌─────────────────┐    ┌────────────────┐   ┌───────────────┐  │
 │  │  Sequence       │    │  Technique     │   │  Move         │  │
 │  │  Similarity     │    │  Classifier    │   │  Recommender  │  │
@@ -98,12 +100,12 @@ PASSPORT는 자세 추정을 통해 영상 속 클라이머의 관절 위치와 
 └──────────────────────────────────┬──────────────────────────────┘
                                    ▼
 ┌─────────────────────────────────────────────────────────────────┐
-│                    MODULE 7: FEEDBACK GENERATOR                  │
-│                                                                  │
-│  • Hold-by-hold 분석 리포트                                      │
+│                    MODULE 7: FEEDBACK GENERATOR                 │
+│                                                                 │
+│  • Hold-by-hold 분석 리포트                                     │
 │  • 무브 추천 확률 (Heel hook 22% vs Toe hook 78%)               │
-│  • 무게중심 궤적 오버레이 시각화                                  │
-│  • 고수 영상과 Side-by-Side 비교                                 │
+│  • 무게중심 궤적 오버레이 시각화                                │
+│  • 고수 영상과 Side-by-Side 비교                                │
 └─────────────────────────────────────────────────────────────────┘
 ```
 
